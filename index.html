@@ -21,7 +21,13 @@
 <li id="1">
 
 <img class="items" src="images/dive1.jpg" alt="" height="100" />
-
+<form class="cart-item">
+	<input type="hidden" id="id" value="open-water-gold-package"/>
+	<input type="hidden" id="price" value="2500"/>
+	<input type="hidden" id="label" value="Open Waters Gold Package" />
+	Amount:	<input type="number" id="amount" value="1" />
+	<input type="submit" value="Add to cart" /> 
+</form>
 <div>
 
 <span class="name">1 Person Gold Package</span>: $<span class="price">2500</span></div></li>
@@ -33,7 +39,13 @@
 <div>
 
 <span class="name">1 Person VIP Package </span>: $<span class="price">4500 </span></div></li>
-
+<form class="cart-item">
+	<input type="hidden" id="id" value="open-water-vip-package"/>
+	<input type="hidden" id="price" value="2500"/>
+	<input type="hidden" id="label" value="Open Waters VIP Package" />
+	Amount:	<input type="number" id="amount" value="1" />
+	<input type="submit" value="Add to cart" /> 
+</form>
 <li id="3">
 
 <img class="items" src="images/dive3.jpg" alt="" height="100" />
@@ -43,26 +55,21 @@
 
 </div>
 
-
-
-
 </li>
 </ul>
-
-
-
-
-
-<div class="cart-total">
-
-<strong>Total Charges: </strong> $<span>0</span>
-
-<input id="total-hidden-charges" name="total-hidden-charges" type="hidden" value="0" /></div>
-
-<button id="Submit">CheckOut</button></form></div>
+<div id="cartContainer">
+	<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+		<input type="hidden" name="cmd" value="_cart">
+		<input type="hidden" name="upload" value="1">
+		<input type="hidden" name="business" value="youremail@mail.com">
+		<input type="hidden" name="currency_code" value="US">
+		<input type="hidden" name="item_name_1" value="beach ball">
+		<input type="hidden" name="amount_1" value="15">
+		<input type="hidden" name="item_name_2" value="towel">
+		<input type="hidden" name="amount_2" value="20">
+		Checkout with Paypal: <input type="image" src="http://www.paypal.com/en_US/i/btn/x-click-but01.gif" name="submit" alt="Make payments with PayPal - it's fast, free and secure!">
+	</form>
 </div>
-
-
 
 
 
