@@ -24,7 +24,7 @@ $('#cart-checkout').click(function(event){
 	newForm = addHiddenInput(newForm,"upload","1");
 	newForm = addHiddenInput(newForm,"business","youremail@mail.com");
 	newForm = addHiddenInput(newForm,"currency_code","US");
-	var cartData =	jQuery.data('#cartContainer','cartData');
+	var cartData =	JSON.parse(localStorage.getItem("cartContainer"));
 	console.log(cartData);
 	var index = 1;
 	cartData.items.forEach(function(element) {
@@ -83,9 +83,7 @@ function addToCart(id,item,amount,price){
 			result[0].amount+=amount;
 
 		}
-		jQuery.data('#cartContainer','cartData',cartData);
-		console.log('cartData:');
-		console.log(cartData);
+		localStorage.setItem("cartContainer",JSON.stringify(cartData));
 	}
 	
 };
