@@ -3,13 +3,37 @@ $(document).ready(function() {
 	var Arrays=new Array();
 	$('.cart-item').submit(function(event){
 		event.preventDefault();
-	var price =	$(this).find("#price").val();
-	var amount =$(this).find("#amount").val();
-	var lable = $(this).find("#label").val();
-	var id = $(this).find("#id").val();
-	addToCart(id,lable,amount,price);
-	});
+		var cartItem = new CartItem();
+		for(var i=0; i < this.elements.length; i++){
+			var element = this.elements[i];
+			var nameSplit = e.name.split("_");
+			var value = e.value;
+			if(nameSplit.length>0){
 
+				var currentName = nameSplit[0];
+				if(currentName == "id"){
+					cartItem.id = value;
+				}
+				if(currentName == "quantity"){
+					cartItem.quantity = value;
+				}
+				if(currentName == "label"){
+					cartItem.quantity = value;
+				}
+				if(currentName == "price"){
+					cartItem.addPrice(parsePrice);
+				}
+				if(currentName == "option"){
+					
+				}
+			}
+		}
+		// var price =	$(this).find("#price").val();
+		// var amount =$(this).find("#amount").val();
+		// var lable = $(this).find("#label").val();
+		// var id = $(this).find("#id").val();
+		// addToCart(id,lable,amount,price);
+	});
 	$('#cartContainer').on('change','#cart-amount', function () {
 		var id = $(this).attr("data-id");
 		var cartData =getCartData();
@@ -36,7 +60,6 @@ $(document).ready(function() {
 		newForm = addHiddenInput(newForm,"business","youremail@mail.com");
 		newForm = addHiddenInput(newForm,"currency_code","US");
 		var cartData =	getCartData();
-		console.log(cartData);
 		var index = 1;
 		cartData.items.forEach(function(element) {
 			newForm = addHiddenInput(newForm,'item_name_'+index,element.label);
@@ -45,8 +68,7 @@ $(document).ready(function() {
 			index +=1;
 		}, this);
     	newForm.submit();
-	});
-	
+	});	
 });
 function addHiddenInput(target,name, value){
 	return target.append($('<input>',{
@@ -65,8 +87,7 @@ function addToCart(id,item,quantity,amount){
 	}
 	var result = $.grep(cartData.items, function(e){ return e.id == id; });
 		
-	if(result.length == 0){// not found
-		console.log("no id found");
+	if(result.length == 0){
 		cartData.items.push({
 			id : id,
 			label : item,
@@ -74,7 +95,7 @@ function addToCart(id,item,quantity,amount){
 			amount : amount
 		});
 	} 
-	else{ // found update data
+	else{ 
 		var everythingElse =	$.grep(cartData.items, function(e){ return e.id != id; });
 		result[0].quantity = +result[0].quantity +  +quantity;
 		cartData.items = everythingElse;
@@ -115,4 +136,63 @@ function getCartData(){
 };
 function setCartDate(cartData){
 	localStorage.setItem("cartContainer",JSON.stringify(cartData));
+};
+function CartItem(obj){
+	this.id = "";
+	this.label = "";
+	this.quantity=0;
+	this.prices = [];
+	this.options=[];
+	for (var prop in obj) {
+		if(prop == "prices")
+		{
+			for(var price in obj[prop]){
+				this.prices.push(new Price(obj[prop][price]));
+			}
+		}
+		if(prop == "options"){
+			for(var option in obj[prop]){
+				this.options.push(new SelectOption(obj[prop][option]));
+			}
+		}
+		this[prop] = obj[prop];
+	}
+
+	CartItem.prototype.addPrice = function (price){
+		this.prices.push(price);
+	};
+	CartItem.prototype.addOption = function(option){
+		this.options.push(option);
+	};
+	CartItem.prototype.getPrice= function(){
+
+	};
+};
+function Price(obj){
+	this.amount = amount;
+	this.quantity = quantity;
+	this.options = [];
+	Price.prototype.addOption = function(option){
+		this.options.push(option);
+	}
+	for (var prop in obj) {
+		this[prop] = obj[prop];
+	}
+};
+function SelectOption(obj){
+	this.Name="";
+	this.Value="";
+	for (var prop in obj) {
+		this[prop] = obj[prop];
+	}
+};
+function parsePrice(priceNames,amount){
+	var price = new Price(amount,1);
+	for(var i=0; i < priceNames.length; i++){
+		var name = priceNames[i];
+		if(name=="option"){
+
+		}
+	}
+	return price;
 };

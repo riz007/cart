@@ -22,11 +22,15 @@
 
 <img class="items" src="images/dive1.jpg" alt="" height="100" />
 <form class="cart-item">
-	<input type="hidden" id="id" value="open-water-gold-package"/>
-	<input type="hidden" id="price" value="2500"/>
-	<input type="hidden" id="label" value="Open Waters Gold Package" />
-	Amount:	<input type="number" id="amount" value="1" />
-	<input type="submit" value="Add to cart" /> 
+	<input type="hidden" name="id" value="open-water"/>
+	<input type="hidden" name="price_option_gold-package" value="2500"/>
+	<input type="hidden" name="label" value="Open Waters" />
+	<select name="option_package">
+		<option value="gold-package">Gold Package</option>
+		<option value="vip-package">VIP Package</option>
+	</select>
+	Amount:	<input type="number" name="quantity" value="1" />
+	<input type="submit" name="summit" value="Add to cart" /> 
 </form>
 <div>
 
