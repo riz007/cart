@@ -5,6 +5,11 @@
 <meta charset="utf-8" />
 
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script type="text/javascript" src="js/model/Basket.js"></script>
+<script type="text/javascript" src="js/model/Business.js"></script>
+<script type="text/javascript" src="js/model/CartItem.js"></script>
+<script type="text/javascript" src="js/model/Option.js"></script>
+<script type="text/javascript" src="js/model/Price.js"></script>
 <script type="text/javascript" src="js/cart.js"></script>
 <script type="text/javascript" src="js/jquery.livequery.js"></script>
 
@@ -24,8 +29,10 @@
 <form class="cart-item">
 	<input type="hidden" name="id" value="open-water"/>
 	<input type="hidden" name="price_option_gold-package" value="2500"/>
+	<input type="hidden" name="price_option_gold-package_quantity_2" value="2000"/>
+	<input type="hidden" name="price_quantity_1_option_vip-package" value="4500"/>
 	<input type="hidden" name="label" value="Open Waters" />
-	<select name="option_package">
+	<select name="option">
 		<option value="gold-package">Gold Package</option>
 		<option value="vip-package">VIP Package</option>
 	</select>
@@ -44,10 +51,10 @@
 
 <span class="name">1 Person VIP Package </span>: $<span class="price">4500 </span></div></li>
 <form class="cart-item">
-	<input type="hidden" id="id" value="open-water-vip-package"/>
-	<input type="hidden" id="price" value="2500"/>
-	<input type="hidden" id="label" value="Open Waters VIP Package" />
-	Amount:	<input type="number" id="amount" value="1" />
+	<input type="hidden" name="id" value="open-water-vip-package"/>
+	<input type="hidden" name="price" value="2500"/>
+	<input type="hidden" name="label" value="Open Waters VIP Package" />
+	Amount:	<input type="number" name="quantity" value="1" />
 	<input type="submit" value="Add to cart" /> 
 </form>
 <li id="3">
