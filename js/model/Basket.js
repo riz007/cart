@@ -15,39 +15,40 @@ function Basket(obj){
 			this[prop] = obj[prop];
 		}
 	}
-	Basket.prototype.addCartItem = function(cartItem){
-      
-	    var result = $.grep(this.cartItems, function(e){ return e.id == cartItem.id; });
-    	if(result.length >= 1)
-    	{
-	    	var everythingElse = $.grep(this.cartItems, function(e){ return e.id != cartItem.id; });
-	    	this.cartItems = everythingElse;
-	    	if(cartItem.options.length >= 1)
-	    	{
-	    		var matchingOptions=false;
-	    		for(var i=0; i< result.length;i++)
-	    		{
-	    			var item = result[i];
-	    			if(item.options.sort().compare(cartItem.options.sort())){
-	    				item.quantity = +item.quantity +  +cartItem.quantity;
-	    				matchingOptions = true;
-	    			}
-	    				this.cartItems.push(item);
-	    		}
-	    		if(!matchingOptions){
-	    			this.cartItems.push(cartItem);
-	    		}
-	    	}
-	    	else
-	    	{
-	    		result[0].quantity = +result[0].quantity +  +cartItem.quantity;
-	    		this.cartItems.push(result[0]);
-	    	}
-	    }    
-	    else
-	    { 
-	    	this.cartItems.push(cartItem);
-	    }
+	Basket.prototype.addCartItem = function(cartObject){
+		var notFound = true;
+	    for(var index= 0;index < this.cartItems.length; index++)
+		{
+			var cartItem = this.cartItems[index];
+			if(cartItem.id==cartObject.id)
+			{
+				if(cartItem.options.length>0){
+					var optionIds = [];
+					cartItem.options.forEach(function(element) {
+						optionIds.push(element.id);
+					}, this);
+					var otherOptionsIds=[];
+					cartObject.options.forEach(function(element) {
+						otherOptionsIds.push(element.id);
+					}, this);
+					if(optionIds.sort().compare(otherOptionsIds.sort())){
+						this.cartItems[index].quantity = +this.cartItems[index].quantity + +cartObject.quantity;
+						notFound = false;
+						break;
+					}
+				}
+				else	
+				{
+					this.cartItems[index].quantity = +this.cartItems[index].quantity + +cartObject.quantity;
+					notFound = false;
+					break;
+				}
+			}
+		}
+		if(notFound){
+
+			this.cartItems.push(cartObject);
+		}
 	}
 	Basket.prototype.updateQuantity= function(cartItemId,cartItemOptions,newQuantity)
 	{
@@ -57,8 +58,11 @@ function Basket(obj){
 			if(cartItem.id==cartItemId)
 			{
 				if(cartItem.options.length>0){
-
-					if(cartItem.options.sort().compare(cartItemOptions.sort())){
+					var optionIds = [];
+					cartItem.options.forEach(function(element) {
+						optionIds.push(element.id);
+					}, this);
+					if(optionIds.sort().compare(cartItemOptions.sort())){
 						this.cartItems[index].quantity = newQuantity;
 						break;
 					}
@@ -79,8 +83,12 @@ function Basket(obj){
 			if(cartItem.id==cartItemId)
 			{
 				if(cartItem.options.length>0){
-
-					if(cartItem.options.sort().compare(cartItemOptions.sort())){
+				var optionIds = [];
+					cartItem.options.forEach(function(element) {
+						optionIds.push(element.id);
+					}, this);
+				
+					if(optionIds.sort().compare(cartItemOptions.sort())){
 						this.cartItems.splice(index, 1);
 						break;
 					}
@@ -93,5 +101,20 @@ function Basket(obj){
 			}
 		}	
 	    
-	}
+	};
+	Basket.prototype.getTotalPrice = function()
+	{
+		if(this.hasItems()){
+			var totalPrice = 0;
+			for(var index=0; index<this.cartItems.length;index++){
+				var cartItem = this.cartItems[index];
+				totalPrice = totalPrice + +cartItem.quantity * +cartItem.getPrice().amount;
+			}
+			return totalPrice;
+		}
+		return 0;		
+	};
+	Basket.prototype.hasItems = function(){
+		return this.cartItems.length > 0;
+	};
 }

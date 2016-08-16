@@ -25,7 +25,11 @@ $(document).ready(function() {
 					cartItem.addPrice(parsePrice(nameSplit,value));
 				}
 				if(currentName == "option"){
-					cartItem.options.push(value);
+					var option = new SelectOption();
+					option.id =	value;
+					option.label = element.options[element.selectedIndex].text;
+					console.log(option);
+					cartItem.options.push(option);
 				}
 			}
 		}
@@ -37,8 +41,15 @@ $(document).ready(function() {
 		var id = $(this).parent("#cart-item-container").attr("data-id");
 		var options = $(this).parent("#cart-item-container").attr("data-options").split(" ");
 		var cartData =getBasket();
-		 var newQuantity = $(this).val();
-		 cartData.updateQuantity(id,options,newQuantity);
+		var newQuantity = $(this).val();
+		if(newQuantity<=0)
+		{
+		 	cartData.removeCartItem(id,options);
+		}
+		else
+		{
+			cartData.updateQuantity(id,options,newQuantity);
+		}
 		setBasket(cartData);
 	});
 	$("#cartContainer").on('click','#remove-cart-item',function(){
@@ -50,23 +61,39 @@ $(document).ready(function() {
 	});
 	$('#cartContainer').on('click','#cart-checkout',function(event){
     	event.preventDefault();
-    	var newForm = $('<form>', {
-       	 	'action': 'https://www.paypal.com/cgi-bin/webscr',
-       	 	'method': 'post'
-    	});
-		newForm = addHiddenInput(newForm,"cmd","_cart");
-		newForm = addHiddenInput(newForm,"upload","1");
-		newForm = addHiddenInput(newForm,"business","pearldivingkohtao@gmail.com");
-		newForm = addHiddenInput(newForm,"currency_code","THB");
 		var cartData =	getBasket();
-		var index = 1;
-		cartData.cartItems.forEach(function(element) {
-			newForm = addHiddenInput(newForm,'item_name_'+index,element.label);
-			newForm = addHiddenInput(newForm,'amount_'+index,element.amount);
-			newForm = addHiddenInput(newForm,'quantity_'+index,element.quantity);
-			index +=1;
-		}, this);
-    	newForm.submit();
+		if(cartData.hasItems()){
+
+			var newForm = $('<form>', {
+				'action': 'https://www.paypal.com/cgi-bin/webscr',
+				'method': 'post'
+			});
+			var email = $('input:hidden[name=business-email]').val();
+			var currency = $('input:hidden[name=business-currency]').val();
+			console.log(email);
+			console.log(currency);
+			newForm = addHiddenInput(newForm,"cmd","_cart");
+			newForm = addHiddenInput(newForm,"upload","1");
+			newForm = addHiddenInput(newForm,"business",email);
+			newForm = addHiddenInput(newForm,"currency_code",currency);
+			var index = 1;
+			cartData.cartItems.forEach(function(element) {
+				var label = element.label;
+				if(element.options.length>0)
+				{
+					var first = true;
+					for(var i= 0;i<element.options.length;i++){
+						var selectOptions = element.options[i];
+						label+= ' - ' + selectOptions.label;
+					}
+				}
+				newForm = addHiddenInput(newForm,'item_name_'+index,label);
+				newForm = addHiddenInput(newForm,'amount_'+index,element.getPrice().amount);
+				newForm = addHiddenInput(newForm,'quantity_'+index,element.quantity);
+				index +=1;
+			}, this);
+			newForm.submit();
+		}
 	});	
 });
 function addHiddenInput(target,name, value){
@@ -81,7 +108,7 @@ function redrawCart(){
 	var container = $("#cartContainer")
 	container.empty();
 	var cartData =	getBasket();
-	if(cartData){
+	if(cartData.hasItems()){
 		cartData.cartItems.sort(function(a,b){
 			var aName = a.label.toLowerCase();
   			var bName = b.label.toLowerCase(); 
@@ -90,18 +117,33 @@ function redrawCart(){
 		cartData.cartItems.forEach(function(element) {
 			var price = element.getPrice();
 			var label = element.label;
-			if(element.options.length>0){
+			var options = "";
+			if(element.options.length>0)
+			{
+				var first = true;
 				for(var i= 0;i<element.options.length;i++){
-					label+= ' - ' + element.options[i];
+					var selectOptions = element.options[i];
+					label+= ' - ' + selectOptions.label;
+					if(first){
+						first = false;
+						options = selectOptions.id;
+					}
+					else
+					{
+						open+= ' ' +selectOptions.id;
+					}
 				}
-			}				
-			var cartItem = '<div id="cart-item-container" data-id="'+ element.id +'" data-options="'+element.options+'"><input id="cart-amount" type="number" value="'+element.quantity +'"/><div>'
+			}
+
+			var cartItem = '<div id="cart-item-container" data-id="'+ element.id +'" data-options="'+ options +'"><input id="cart-amount" type="number" value="'+element.quantity +'"/><div>'
 			+ label +'</div><div class=cart-price">'+ element.quantity+'x '+ price.amount+'</div><div class"cart-price-total">' + +element.quantity * +price.amount
 			+'</div><button id="remove-cart-item">remove</button></div>';
 		container.append(cartItem);
 	}, this);
 	}
-	container.append('<button id="cart-checkout">Checkout</button>');
+		var basketTotal = '<div id="basket-total">Total: ' + cartData.getTotalPrice() + '</div>';
+		container.append(basketTotal);
+		container.append('<button id="cart-checkout">Checkout</button>');
 };
 function getBasket(){
 	var untypedObjects= JSON.parse(localStorage.getItem("junglecoder-basket"));

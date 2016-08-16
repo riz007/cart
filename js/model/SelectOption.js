@@ -1,4 +1,4 @@
-function Option(obj){
+function SelectOption(obj){
     this.id = "";
     this.label="";
 }

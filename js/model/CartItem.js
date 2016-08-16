@@ -26,7 +26,10 @@ function CartItem(obj){
 		this.options.push(option);
 	};
 	CartItem.prototype.getPrice= function(){
-		var options = this.options;
+		var options = []
+        this.options.forEach(function(element) {
+            options.push(element.id);
+        }, this);
 		var matchingPrices = $.grep(this.prices, function(e){ return e.options.sort().compare(options.sort()); });
 		var bestMatch;
 		for(var i =0 ; i <matchingPrices.length;i++){
