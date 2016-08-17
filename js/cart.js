@@ -1,7 +1,7 @@
-$(document).ready(function() {
+jQuery(document).ready(function() {
 	redrawCart();
 	var Arrays=new Array();
-	$('.cart-item').submit(function(event){
+	jQuery('.cart-item').submit(function(event){
 		event.preventDefault();
 		var cartItem = new CartItem();
 		for(var i=0; i < this.elements.length; i++){
@@ -37,7 +37,7 @@ $(document).ready(function() {
 		basket.addCartItem(cartItem);
 		setBasket(basket);
 	});
-	$('#cartContainer').on('change','#cart-amount', function () {
+	jQuery('#cartContainer').on('change','#cart-amount', function () {
 		var id = $(this).parent("#cart-item-container").attr("data-id");
 		var options = $(this).parent("#cart-item-container").attr("data-options").split(" ");
 		var cartData =getBasket();
@@ -52,24 +52,24 @@ $(document).ready(function() {
 		}
 		setBasket(cartData);
 	});
-	$("#cartContainer").on('click','#remove-cart-item',function(){
+	jQuery("#cartContainer").on('click','#remove-cart-item',function(){
 		var id = $(this).parent("#cart-item-container").attr("data-id");
 		var options = $(this).parent("#cart-item-container").attr("data-options").split(" ");
 		var cartData =getBasket();
 		cartData.removeCartItem(id,options);
 		setBasket(cartData);
 	});
-	$('#cartContainer').on('click','#cart-checkout',function(event){
+	jQuery('#cartContainer').on('click','#cart-checkout',function(event){
     	event.preventDefault();
 		var cartData =	getBasket();
 		if(cartData.hasItems()){
 
-			var newForm = $('<form>', {
+			var newForm = jQuery('<form>', {
 				'action': 'https://www.paypal.com/cgi-bin/webscr',
 				'method': 'post'
 			});
-			var email = $('input:hidden[name=business-email]').val();
-			var currency = $('input:hidden[name=business-currency]').val();
+			var email = jQuery('input:hidden[name=business-email]').val();
+			var currency = jQuery('input:hidden[name=business-currency]').val();
 			console.log(email);
 			console.log(currency);
 			newForm = addHiddenInput(newForm,"cmd","_cart");
@@ -97,7 +97,7 @@ $(document).ready(function() {
 	});	
 });
 function addHiddenInput(target,name, value){
-	return target.append($('<input>',{
+	return target.append(jQuery('<input>',{
 		'type' : 'hidden',
 		'name' : name,
 		'value' : value
@@ -105,10 +105,11 @@ function addHiddenInput(target,name, value){
 };
 
 function redrawCart(){
-	var container = $("#cartContainer")
+	var container = jQuery("#cartContainer")
 	container.empty();
 	var cartData =	getBasket();
-	if(cartData.hasItems()){
+	if(cartData.hasItems())
+	{
 		cartData.cartItems.sort(function(a,b){
 			var aName = a.label.toLowerCase();
   			var bName = b.label.toLowerCase(); 
@@ -135,15 +136,17 @@ function redrawCart(){
 				}
 			}
 
-			var cartItem = '<div id="cart-item-container" data-id="'+ element.id +'" data-options="'+ options +'"><input id="cart-amount" type="number" value="'+element.quantity +'"/><div>'
-			+ label +'</div><div class=cart-price">'+ element.quantity+'x '+ price.amount+'</div><div class"cart-price-total">' + +element.quantity * +price.amount
-			+'</div><button id="remove-cart-item">remove</button></div>';
-		container.append(cartItem);
-	}, this);
+			var cartItem = '<div id="cart-item-container" data-id="'+ element.id +'" data-options="'
+				+ options +'"><input id="cart-amount" class="cart-item-amount" type="number" value="'+element.quantity 
+				+'"/><div class="cart-item-text"><div class="cart-item-label">' + label +'</div><div class="cart-item-price">'
+				+ element.quantity+'x '+ price.amount+'</div><div class"cart-item-price-total">' + +element.quantity * +price.amount
+				+'</div></div><button id="remove-cart-item" class="cart-item-remove">X</button></div>';
+				container.append(cartItem);
+		}, this);
 	}
-		var basketTotal = '<div id="basket-total">Total: ' + cartData.getTotalPrice() + '</div>';
-		container.append(basketTotal);
-		container.append('<button id="cart-checkout">Checkout</button>');
+	var basketTotal = '<div id="basket-total">Total: ' + cartData.getTotalPrice() + '</div>';
+	container.append(basketTotal);
+	container.append('<button id="cart-checkout">Checkout</button>');
 };
 function getBasket(){
 	var untypedObjects= JSON.parse(localStorage.getItem("junglecoder-basket"));
@@ -185,8 +188,8 @@ Array.prototype.compare = function(testArr) {
         else if (this[i] !== testArr[i]) return false;
     }
     return true;
-}
+};
 
 function isInt(n) {
    return n % 1 === 0;
-}
+};
