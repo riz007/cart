@@ -30,7 +30,7 @@ function CartItem(obj){
         this.options.forEach(function(element) {
             options.push(element.id);
         }, this);
-		var matchingPrices = $.grep(this.prices, function(e){ return e.options.sort().compare(options.sort()); });
+		var matchingPrices = jQuery.grep(this.prices, function(e){ return e.options.sort().compare(options.sort()); });
 		var bestMatch;
 		for(var i =0 ; i <matchingPrices.length;i++){
 			var currentPrice = matchingPrices[i];

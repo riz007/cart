@@ -1,4 +1,4 @@
-jQuery(document).ready(function() {
+function main() {
 	redrawCart();
 	var Arrays=new Array();
 	jQuery('.cart-item').submit(function(event){
@@ -38,10 +38,10 @@ jQuery(document).ready(function() {
 		setBasket(basket);
 	});
 	jQuery('#cartContainer').on('change','#cart-amount', function () {
-		var id = $(this).parent("#cart-item-container").attr("data-id");
-		var options = $(this).parent("#cart-item-container").attr("data-options").split(" ");
+		var id = jQuery(this).parent("#cart-item-container").attr("data-id");
+		var options = jQuery(this).parent("#cart-item-container").attr("data-options").split(" ");
 		var cartData =getBasket();
-		var newQuantity = $(this).val();
+		var newQuantity = jQuery(this).val();
 		if(newQuantity<=0)
 		{
 		 	cartData.removeCartItem(id,options);
@@ -53,8 +53,8 @@ jQuery(document).ready(function() {
 		setBasket(cartData);
 	});
 	jQuery("#cartContainer").on('click','#remove-cart-item',function(){
-		var id = $(this).parent("#cart-item-container").attr("data-id");
-		var options = $(this).parent("#cart-item-container").attr("data-options").split(" ");
+		var id = jQuery(this).parent("#cart-item-container").attr("data-id");
+		var options = jQuery(this).parent("#cart-item-container").attr("data-options").split(" ");
 		var cartData =getBasket();
 		cartData.removeCartItem(id,options);
 		setBasket(cartData);
@@ -93,7 +93,7 @@ jQuery(document).ready(function() {
 			newForm.submit();
 		}
 	});	
-});
+};
 function addHiddenInput(target,name, value){
 	return target.append(jQuery('<input>',{
 		'type' : 'hidden',
@@ -135,8 +135,8 @@ function redrawCart(){
 			}
 
 			var cartItem = '<div id="cart-item-container" data-id="'+ element.id +'" data-options="'
-				+ options +'"><input id="cart-amount" class="cart-item-amount" type="number" value="'+element.quantity 
-				+'"/><div class="cart-item-text"><div class="cart-item-label">' + label +'</div><div class="cart-item-price">'
+				+ options +'"><div class="cart-item-input-container"><input id="cart-amount" class="cart-item-amount" type="number" value="'+element.quantity 
+				+'"/></div><div class="cart-item-text"><div class="cart-item-label">' + label +'</div><br/><div class="cart-item-price">'
 				+ element.quantity+'x '+ price.amount+'</div></div><button id="remove-cart-item" class="cart-item-remove">X</button></div>';
 				container.append(cartItem);
 		}, this);
@@ -190,3 +190,4 @@ Array.prototype.compare = function(testArr) {
 function isInt(n) {
    return n % 1 === 0;
 };
+main();
