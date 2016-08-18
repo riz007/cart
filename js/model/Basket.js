@@ -117,4 +117,4 @@ function Basket(obj){
 	Basket.prototype.hasItems = function(){
 		return this.cartItems.length > 0;
 	};
-}
+};

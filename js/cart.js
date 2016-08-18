@@ -70,8 +70,6 @@ jQuery(document).ready(function() {
 			});
 			var email = jQuery('input:hidden[name=business-email]').val();
 			var currency = jQuery('input:hidden[name=business-currency]').val();
-			console.log(email);
-			console.log(currency);
 			newForm = addHiddenInput(newForm,"cmd","_cart");
 			newForm = addHiddenInput(newForm,"upload","1");
 			newForm = addHiddenInput(newForm,"business",email);
@@ -139,12 +137,11 @@ function redrawCart(){
 			var cartItem = '<div id="cart-item-container" data-id="'+ element.id +'" data-options="'
 				+ options +'"><input id="cart-amount" class="cart-item-amount" type="number" value="'+element.quantity 
 				+'"/><div class="cart-item-text"><div class="cart-item-label">' + label +'</div><div class="cart-item-price">'
-				+ element.quantity+'x '+ price.amount+'</div><div class"cart-item-price-total">' + +element.quantity * +price.amount
-				+'</div></div><button id="remove-cart-item" class="cart-item-remove">X</button></div>';
+				+ element.quantity+'x '+ price.amount+'</div></div><button id="remove-cart-item" class="cart-item-remove">X</button></div>';
 				container.append(cartItem);
 		}, this);
 	}
-	var basketTotal = '<div id="basket-total">Total: ' + cartData.getTotalPrice() + '</div>';
+	var basketTotal = '<div id="basket-total">Total: ' + cartData.getTotalPrice()+' '+ jQuery('input:hidden[name=business-currency]').val() + '</div>';
 	container.append(basketTotal);
 	container.append('<button id="cart-checkout">Checkout</button>');
 };
