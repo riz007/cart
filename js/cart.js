@@ -28,7 +28,6 @@ function main() {
 					var option = new SelectOption();
 					option.id =	value;
 					option.label = element.options[element.selectedIndex].text;
-					console.log(option);
 					cartItem.options.push(option);
 				}
 			}
@@ -38,8 +37,8 @@ function main() {
 		setBasket(basket);
 	});
 	jQuery('#cartContainer').on('change','#cart-amount', function () {
-		var id = jQuery(this).parent("#cart-item-container").attr("data-id");
-		var options = jQuery(this).parent("#cart-item-container").attr("data-options").split(" ");
+		var id = jQuery(this).parents("#cart-item-container").attr("data-id");
+		var options = jQuery(this).parents("#cart-item-container").attr("data-options").split(" ");
 		var cartData =getBasket();
 		var newQuantity = jQuery(this).val();
 		if(newQuantity<=0)
@@ -60,8 +59,11 @@ function main() {
 		setBasket(cartData);
 	});
 	jQuery('#cartContainer').on('click','#cart-checkout',function(event){
-    	event.preventDefault();
+    
+		event.preventDefault();
+	
 		var cartData =	getBasket();
+	
 		if(cartData.hasItems()){
 
 			var newForm = jQuery('<form>', {
@@ -90,6 +92,8 @@ function main() {
 				newForm = addHiddenInput(newForm,'quantity_'+index,element.quantity);
 				index +=1;
 			}, this);
+			newForm.hide();
+			jQuery(this).parent().append(newForm);
 			newForm.submit();
 		}
 	});	
@@ -129,7 +133,7 @@ function redrawCart(){
 					}
 					else
 					{
-						open+= ' ' +selectOptions.id;
+						options+= ' ' +selectOptions.id;
 					}
 				}
 			}
@@ -142,8 +146,12 @@ function redrawCart(){
 		}, this);
 	}
 	var basketTotal = '<div id="basket-total">Total: ' + cartData.getTotalPrice()+' '+ jQuery('input:hidden[name=business-currency]').val() + '</div>';
+	var checkoutLable = jQuery('input:hidden[name=checkout-label]').val();
+	if(!checkoutLable)
+		checkoutLable = 'Checkout';
 	container.append(basketTotal);
-	container.append('<button id="cart-checkout">Checkout</button>');
+
+	container.append('<button id="cart-checkout">'+checkoutLable+'</button>');
 };
 function getBasket(){
 	var untypedObjects= JSON.parse(localStorage.getItem("junglecoder-basket"));
