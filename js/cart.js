@@ -68,7 +68,8 @@ function main() {
 
 			var newForm = jQuery('<form>', {
 				'action': 'https://www.paypal.com/cgi-bin/webscr',
-				'method': 'post'
+				'method': 'post',
+				'target' : "_newtab"
 			});
 			var email = jQuery('input:hidden[name=business-email]').val();
 			var currency = jQuery('input:hidden[name=business-currency]').val();
@@ -76,6 +77,7 @@ function main() {
 			newForm = addHiddenInput(newForm,"upload","1");
 			newForm = addHiddenInput(newForm,"business",email);
 			newForm = addHiddenInput(newForm,"currency_code",currency);
+			newForm = addHiddenInput(newForm,"landing_page","Billing");
 			var index = 1;
 			cartData.cartItems.forEach(function(element) {
 				var label = element.label;
@@ -141,17 +143,26 @@ function redrawCart(){
 			var cartItem = '<div id="cart-item-container" data-id="'+ element.id +'" data-options="'
 				+ options +'"><div class="cart-item-input-container"><input id="cart-amount" class="cart-item-amount" type="number" value="'+element.quantity 
 				+'"/></div><div class="cart-item-text"><div class="cart-item-label">' + label +'</div><br/><div class="cart-item-price">'
-				+ element.quantity+'x '+ price.amount+'</div></div><button id="remove-cart-item" class="cart-item-remove">X</button></div>';
+				+ element.quantity+'x '+ price.amount+'</div></div><input id="remove-cart-item" type="submit" class="cart-item-remove"/ value="x"></div>';
 				container.append(cartItem);
 		}, this);
 	}
+	else
+	{
+		var emptyString = jQuery('input:hidden[name=basket-empty-label]').val();
+		if(emptyString){
+			var emptyItem = '<p>'+emptyString+'</p>';
+			container.append(emptyItem);
+		}
+	}
+	
 	var basketTotal = '<div id="basket-total">Total: ' + cartData.getTotalPrice()+' '+ jQuery('input:hidden[name=business-currency]').val() + '</div>';
 	var checkoutLable = jQuery('input:hidden[name=checkout-label]').val();
 	if(!checkoutLable)
 		checkoutLable = 'Checkout';
 	container.append(basketTotal);
 
-	container.append('<button id="cart-checkout">'+checkoutLable+'</button>');
+	container.append('<input id="cart-checkout" type="submit" value="'+checkoutLable+'"/>');
 };
 function getBasket(){
 	var untypedObjects= JSON.parse(localStorage.getItem("junglecoder-basket"));
